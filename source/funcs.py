@@ -37,7 +37,7 @@ def update_items(chosen_item):
         else:
             chosen_item[key] = chosen_value
 
-def write_into_courier_db(Courier_name, Phone_number):
+def write_into_courier_database(Courier_name, Phone_number):
     load_dotenv()
     host = os.environ.get("mysql_host")
     user = os.environ.get("mysql_user")
@@ -57,7 +57,7 @@ def write_into_courier_db(Courier_name, Phone_number):
     cursor.close()
     connection.close()
     
-def read_courier_from_db():
+def read_courier_from_database():
     load_dotenv()
     host = os.environ.get("mysql_host")
     user = os.environ.get("mysql_user")
@@ -79,7 +79,7 @@ def read_courier_from_db():
     cursor.close()
     connection.close()
 
-def read_product_from_db():
+def read_product_from_database():
     load_dotenv()
     host = os.environ.get("mysql_host")
     user = os.environ.get("mysql_user")
@@ -101,7 +101,7 @@ def read_product_from_db():
     cursor.close()
     connection.close()
 
-def write_into_product_db(product_name, product_price):
+def write_into_product_database(product_name, product_price):
     load_dotenv()
     host = os.environ.get("mysql_host")
     user = os.environ.get("mysql_user")
@@ -120,3 +120,84 @@ def write_into_product_db(product_name, product_price):
     connection.commit()
     cursor.close()
     connection.close()
+    
+def delete_products_from_database(del_product_id):
+    load_dotenv()
+    host = os.environ.get("mysql_host")
+    user = os.environ.get("mysql_user")
+    password = os.environ.get("mysql_pass")
+    database = os.environ.get("mysql_db")
+    
+    connection = pymysql.connect(
+        host,
+        user,
+        password,
+        database
+    )
+    cursor = connection.cursor()
+    sql = 'DELETE FROM products WHERE product_id = %s'
+    val = [(del_product_id)]
+    
+    cursor.execute(sql,val)
+    
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+def delete_courier_from_database(del_courier_id):
+    load_dotenv()
+    host = os.environ.get("mysql_host")
+    user = os.environ.get("mysql_user")
+    password = os.environ.get("mysql_pass")
+    database = os.environ.get("mysql_db")
+    
+    connection = pymysql.connect(
+        host,
+        user,
+        password,
+        database
+    )
+    cursor = connection.cursor()
+    sql = 'DELETE FROM courier WHERE courier_id = %s'
+    val = [(del_courier_id)]
+    
+    cursor.execute(sql,val)
+    
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+# changing stuff
+def change_into_product_db(new_product, new_price, new_product_id):
+    load_dotenv()
+    host = os.environ.get("mysql_host")
+    user = os.environ.get("mysql_user")
+    password = os.environ.get("mysql_pass")
+    database = os.environ.get("mysql_db")
+
+    connection = pymysql.connect(
+        host,
+        user,
+        password,
+        database
+    )
+
+    cursor = connection.cursor()
+
+    sql = 'UPDATE Products SET Product_Name = %s, Product_Price = %s WHERE Product_Id = %s'
+    val = [(new_product, new_price, new_product_id)]
+    cursor.executemany(sql, val)
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+    
+# oussamas code
+
+# product_id = int(input('Choose Product ID: '))
+# product_name = input('Choose A Product Name: ')
+# product_price = float(input('Choose A Product Price: '))
+
+# change_into_product_db(product_name, product_price, product_id)
+
+

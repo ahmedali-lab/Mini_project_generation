@@ -1,5 +1,5 @@
 from typing import Dict
-from funcs import read_csv_file, write_csv_file, append_dict, update_items, write_into_courier_db, read_courier_from_db, read_product_from_db, write_into_product_db
+from funcs import read_csv_file, write_csv_file, append_dict, update_items, write_into_courier_database, read_courier_from_database, read_product_from_database, write_into_product_database, delete_products_from_database, delete_courier_from_database
 import csv
 import pymysql
 import os
@@ -92,21 +92,21 @@ def product_menu():
         
         # for i in products_list:
         #     print(i)
-        read_product_from_db()
+        read_product_from_database()
         print('\n Here are the current avaliable products. You will now return to the main menu.\n')
         main_menu()
         
     elif product_menu_option == 2:
         
         print('\nproduct list: ')
-        read_product_from_db()
+        read_product_from_database()
         new_product = input('\nPlease enter product you would like to add: ')
         new_product_price = float(input(('\nPlease enter new product price: ')))
-        write_into_product_db(new_product, new_product_price)
+        write_into_product_database(new_product, new_product_price)
         
         
         print('new list: ')
-        read_product_from_db()
+        read_product_from_database()
         
         
         # emp_dict = {}
@@ -135,24 +135,34 @@ def product_menu():
         main_menu()
         
     elif product_menu_option == 4:
-            
-        print('Current product list looks like this: \n')
-        for (key, value) in enumerate(products_list):
-            print(key, value)
-            
         
-        new_product_index_value = int(input('\nPlease enter the product number value you would like to delete: '))
-
-        del products_list[new_product_index_value]
+        print('\nCurrent product list: ')
+        read_product_from_database()
         
-        print(f'''\nYou have successfully deleted the product Here is the current list of products: ''')
+        product_to_delete = int(input('\nPlease select which product you would like to delete via ID'))
+        delete_products_from_database(product_to_delete)
         
-        for (key, value) in enumerate(products_list):
-            print(key, value)
-
-        print('\n You will now return to main menu.')
-        
+        print('\nNew product list: ' )
+        read_product_from_database()
+        print('\nYou will now return to main menu')
         main_menu()
+        
+        # print('Current product list looks like this: \n')
+        # for (key, value) in enumerate(products_list):
+        #     print(key, value)
+            
+        
+        # new_product_index_value = int(input('\nPlease enter the product number value you would like to delete: '))
+
+        # del products_list[new_product_index_value]
+        
+        # print(f'''\nYou have successfully deleted the product Here is the current list of products: ''')
+        
+        # for (key, value) in enumerate(products_list):
+        #     print(key, value)
+
+        # print('\n You will now return to main menu.')
+        
 
 #### COURIER FUNCTION ####
 
@@ -190,17 +200,17 @@ def courier_menu():
         
         print('\nHere are the current avaliable couriers. You will now return to the main menu. ')
         
-        read_courier_from_db()
+        read_courier_from_database()
         
         main_menu()
         
     elif couriers_menu_option == 2:
         
-        print('\ncouriers list: ')
-        read_courier_from_db()
+        print('\nCurrent couriers list: ')
+        read_courier_from_database()
         new_courier = input('\nPlease enter new courier name: ')
         new_courier_phone_number = input('\nPlease enter new courier phone number: ')
-        write_into_courier_db(new_courier, new_courier_phone_number)
+        write_into_courier_database(new_courier, new_courier_phone_number)
         
         # emp_dict2 = {}
         # emp_dict2['courier_name'] = new_courier 
@@ -212,53 +222,8 @@ def courier_menu():
         
         #print(f'\n{emp_dict2} - Here is your new courier name and number. You will now return to main menu. ' )
         
-        print('new list: ')
-        read_courier_from_db()
-        
-        
-        # data = pd.read_csv (r'couriers.csv')   
-        # df = pd.DataFrame(data, columns= ['courier_name','courier_number'])
-        # print(df)
-        # # Load environment variables from .env file
-        # load_dotenv()
-        # host = os.environ.get("mysql_host")
-        # user = os.environ.get("mysql_user")
-        # password = os.environ.get("mysql_pass")
-        # database = os.environ.get("mysql_db")
-
-        # # Establish a database connection
-        # connection = pymysql.connect(
-        #     host,
-        #     user,
-        #     password,
-        #     database
-        # )
-
-        # # A cursor is an object that represents a DB cursor, which is used to manage the context of a fetch operation.
-        # cursor = connection.cursor()
-
-        # # sql = "INSERT INTO courier (Courier_name, Phone_number) VALUES (%s, %s)"
-        # # val = ("Ahmed", 7593969647)
-        # # cursor.execute(sql, val)
-        # sql = "INSERT INTO courier (Courier_name, Phone_number) VALUES (%s, %s)"
-        # val = [
-        # ('Ahmed', 75936647),
-        # ('Rumaanah', 70000002),
-        # ('Oussama',700000003),
-        # ('Idris',70000004),
-        # ]
-        # cursor.executemany(sql, val)
-        # cursor.execute('SELECT Courier_name,  Phone_number FROM courier')
-        # # Gets all rows from the result
-        # rows = cursor.fetchall()
-        # for row in rows:
-        #     print(row)
-        #     print(f'Courier_name: {str(row[0])}, Phone_number: {row[1]},')
-        # # Add code here to insert a new record
-
-        # connection.commit()
-        # cursor.close()
-        # connection.close()
+        print('\n New courier list: ')
+        read_courier_from_database()
         
         main_menu()
         
@@ -277,16 +242,26 @@ def courier_menu():
         
     elif couriers_menu_option == 4:
         
-        for index, value in enumerate(couriers_list):
-                print(index, value)
+        print('\nCurrent courier list: ')
+        read_courier_from_database()
         
-        new_courier_index_value = int(input('\nPlease the number index value of courier info you would like to delete: '))
+        courier_to_delete = int(input('\nPlease select which courier you would like to delete via ID: '))
+        delete_courier_from_database(courier_to_delete)
+        
+        print('\nNew product list: ' )
+        read_courier_from_database()
+        print('\nYou will now return to main menu')
+        main_menu()
+        # for index, value in enumerate(couriers_list):
+        #         print(index, value)
+        
+        # new_courier_index_value = int(input('\nPlease the number index value of courier info you would like to delete: '))
 
-        del couriers_list[new_courier_index_value] 
+        # del couriers_list[new_courier_index_value] 
         
-        for index, value in enumerate(couriers_list):
-                print(index, value)
-                print('\nHere is your new list of couriers')
+        # for index, value in enumerate(couriers_list):
+        #         print(index, value)
+        #         print('\nHere is your new list of couriers')
 
 def order_menu():
     order_menu_option = int(input(
