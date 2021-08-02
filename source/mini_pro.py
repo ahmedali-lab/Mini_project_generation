@@ -1,5 +1,5 @@
 from typing import Dict
-from funcs import read_csv_file, write_csv_file, append_dict, update_items, write_into_courier_database, read_courier_from_database, read_product_from_database, write_into_product_database, delete_products_from_database, delete_courier_from_database
+from funcs import read_csv_file, write_csv_file, append_dict, update_items, write_into_courier_database, read_courier_from_database, read_product_from_database, write_into_product_database, delete_products_from_database, delete_courier_from_database, change_product_value_in_db,change_courier_value_in_db
 import csv
 import pymysql
 import os
@@ -9,11 +9,9 @@ products_list = []
 
 products_list = read_csv_file('products.csv', products_list)
 
-
 couriers_list = []
 
 couriers_list = read_csv_file('couriers.csv',couriers_list)
-
 
 orders_in_progress = []
 
@@ -90,15 +88,13 @@ def product_menu():
         
     elif product_menu_option== 1:
         
-        # for i in products_list:
-        #     print(i)
         read_product_from_database()
         print('\n Here are the current avaliable products. You will now return to the main menu.\n')
         main_menu()
         
     elif product_menu_option == 2:
         
-        print('\nproduct list: ')
+        print('\nCurrent product list: ')
         read_product_from_database()
         new_product = input('\nPlease enter product you would like to add: ')
         new_product_price = float(input(('\nPlease enter new product price: ')))
@@ -108,29 +104,21 @@ def product_menu():
         print('new list: ')
         read_product_from_database()
         
-        
-        # emp_dict = {}
-        # emp_dict['product_name'] = new_product
-        # emp_dict['product_price'] = new_product_price
-        # products_list.append(emp_dict)
-        # headers = ['product_name', 'product_price']
-        
-        # append_dict('products.csv', emp_dict, headers)
-        
-        # print(f'\n{emp_dict} - Here is your new product and price. You will now return to main menu. ' )
-        
         main_menu()
 
     elif product_menu_option == 3:
         
-        for index, value in enumerate(products_list):
-            print(index, value)
+        read_product_from_database()
         
-        user_index_value = int(input('please enter your desired product index number to update'))
-        new_var = products_list[user_index_value]
-        update_items(new_var)
+        product_id = input('\nPlease choose which product you would like to update via ID: ')   
+        product_name = input('\nPlease choose a new product name: ')
+        product_price = input('\nPlease choose a new product price value: ')
         
-        print(f'{new_var} - Here is your updated product item \n')
+        change_product_value_in_db(product_name, product_price, product_id)
+        
+        read_product_from_database()
+        
+        print('\nYou have successfully updated your product value. You will now return to main menu')
         
         main_menu()
         
@@ -146,23 +134,6 @@ def product_menu():
         read_product_from_database()
         print('\nYou will now return to main menu')
         main_menu()
-        
-        # print('Current product list looks like this: \n')
-        # for (key, value) in enumerate(products_list):
-        #     print(key, value)
-            
-        
-        # new_product_index_value = int(input('\nPlease enter the product number value you would like to delete: '))
-
-        # del products_list[new_product_index_value]
-        
-        # print(f'''\nYou have successfully deleted the product Here is the current list of products: ''')
-        
-        # for (key, value) in enumerate(products_list):
-        #     print(key, value)
-
-        # print('\n You will now return to main menu.')
-        
 
 #### COURIER FUNCTION ####
 
@@ -185,7 +156,7 @@ def courier_menu():
 0 to return to the main menu, 
 1 to view couriers_ list, 
 2 to add new courier, 
-3 to update  an existing courier or 
+3 to update an existing courier or 
 4 to delete a courier:   
 '''))
     
@@ -194,14 +165,8 @@ def courier_menu():
         
     elif couriers_menu_option == 1:
         
-        # for i in couriers_list:
-        #     print(i)
-            
-        
         print('\nHere are the current avaliable couriers. You will now return to the main menu. ')
-        
         read_courier_from_database()
-        
         main_menu()
         
     elif couriers_menu_option == 2:
@@ -212,16 +177,6 @@ def courier_menu():
         new_courier_phone_number = input('\nPlease enter new courier phone number: ')
         write_into_courier_database(new_courier, new_courier_phone_number)
         
-        # emp_dict2 = {}
-        # emp_dict2['courier_name'] = new_courier 
-        # emp_dict2['courier_number'] = new_courier_phone_number
-        # couriers_list.append(emp_dict2)
-        # headers2 = ['courier_name', 'courier_number']
-        
-        #append_dict('couriers.csv', emp_dict2, headers2)
-        
-        #print(f'\n{emp_dict2} - Here is your new courier name and number. You will now return to main menu. ' )
-        
         print('\n New courier list: ')
         read_courier_from_database()
         
@@ -229,14 +184,18 @@ def courier_menu():
         
     elif couriers_menu_option == 3:
         
-        for index, value in enumerate(couriers_list):
-            print(index, value)
         
-        user_index_value2 = int(input('\nplease enter your desired courier index number to update '))
-        new_var2 = couriers_list[user_index_value2]
-        update_items(new_var2)
+        read_courier_from_database()
         
-        print(f'\n{new_var2} - Here is your updated courier information')
+        courier_id = input('\nPlease choose which courier you would like to update via ID: ')   
+        new_courier_input = input('\nPlease choose a new courier name: ')
+        new_courier_num_input = input('\nPlease choose a new courier number value: ')
+        
+        
+        change_courier_value_in_db(new_courier_input, new_courier_num_input, courier_id)
+        
+        read_courier_from_database()
+        print('\nYou have successfully updated your courier value. You will now return to main menu')
         
         main_menu()
         
@@ -252,16 +211,6 @@ def courier_menu():
         read_courier_from_database()
         print('\nYou will now return to main menu')
         main_menu()
-        # for index, value in enumerate(couriers_list):
-        #         print(index, value)
-        
-        # new_courier_index_value = int(input('\nPlease the number index value of courier info you would like to delete: '))
-
-        # del couriers_list[new_courier_index_value] 
-        
-        # for index, value in enumerate(couriers_list):
-        #         print(index, value)
-        #         print('\nHere is your new list of couriers')
 
 def order_menu():
     order_menu_option = int(input(
@@ -282,23 +231,23 @@ def order_menu():
         if orders_in_progress != []:
             print(orders_in_progress)
         else:
-            print('there are currently no orders')
+            print('\nthere are currently no orders')
         
         main_menu()
             
     elif order_menu_option == 2:
         
-        customer_name = input('Please enter your name: \n')
-        customer_address = input('Please enter your address: \n')
-        customer_number = int(input('Please enter your phone number: \n'))
+        customer_name = input('\nPlease enter your name: ')
+        customer_address = input('\nPlease enter your address: ')
+        customer_number = int(input('\nPlease enter your phone number: '))
         
         for key, value in enumerate(products_list):
             print(key, value)
-        customer_product_choice = input('Please select your product')
+        customer_product_choice = input('\nPlease select your product: ')
         
         for key, value in enumerate(couriers_list):
             print(key, value)
-        customer_courier_choice = int(input(f'Please enter which courier you would like from 0 to {len(couriers_list) - 1}: '))
+        customer_courier_choice = int(input(f'\nPlease enter which courier you would like from 0 to {len(couriers_list) - 1}: '))
         
         new_order = {}
         new_order['customer_name'] = customer_name 
@@ -312,7 +261,7 @@ def order_menu():
         
         append_dict('orders.csv', new_order, order_headers)
         
-        print('Here is your new order', new_order)
+        print('\nHere is your new order', new_order)
         
         main_menu()
         
@@ -335,7 +284,7 @@ def order_menu():
             print(f'\n{orders_in_progress[desired_order]} - Here is your order with the updated order status. You will now return to main menu ')
             main_menu()
         else:
-            print('there are currently no orders - You will now return to order menu')
+            print('\nthere are currently no orders - You will now return to order menu')
             order_menu()
             
     elif order_menu_option == 4:
@@ -343,11 +292,11 @@ def order_menu():
         for key, value in enumerate(orders_in_progress):
             print(key, value)
         
-        which_order_input = int(input(f'Please select which order you would like to update from 0 to {len(orders_in_progress) - 1 }: \n'))
+        which_order_input = int(input(f'\nPlease select which order you would like to update from 0 to {len(orders_in_progress) - 1 }: '))
         
         while which_order_input < 0  or  which_order_input > len(orders_in_progress) - 1:
             print('Invalid input. Please try again')
-            which_order_input = int(input(f'Please select which order you would like to update from 0 to {len(orders_in_progress) - 1 }: \n'))
+            which_order_input = int(input(f'\nPlease select which order you would like to update from 0 to {len(orders_in_progress) - 1 }: '))
             
         order_to_update = orders_in_progress[which_order_input]
         
@@ -370,7 +319,7 @@ def order_menu():
         for key, value in enumerate(orders_in_progress):
                 print(key, value)
         
-        which_order_input_2 = int(input(f'Please select which order you would like to update from 0 to {len(orders_in_progress) - 1 }: \n'))
+        which_order_input_2 = int(input(f'\nPlease select which order you would like to update from 0 to {len(orders_in_progress) - 1 }: '))
         
         del orders_in_progress[which_order_input_2]
         
