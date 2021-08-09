@@ -1,4 +1,3 @@
-
 from funcs import read_csv_file, write_csv_file, append_dict, update_items, write_into_courier_database, read_courier_from_database
 from funcs import read_product_from_database, write_into_product_database, delete_products_from_database 
 from funcs import delete_courier_from_database, change_product_value_in_db,change_courier_value_in_db,read_orders_from_database
@@ -28,11 +27,23 @@ print(f'\n\t---------------------------{Print_colours.yellow}WELCOME{Print_colou
 
 def main_menu():
 
-    main_menu_options = int(input(f'''\n\bPlease select 0 to exit app and save data, 1 for product options, 2 for courier options or 3 for order options: '''))
+    main_menu_options = int(input(f'''\n{Print_colours.yellow}
+    (Main Menu) Please select:
+    {Print_colours.reset}
+    0 - to exit app and save data,
+    1 - for product options 
+    2 - for courier options 
+    3 - for order options: '''))
     
     while main_menu_options < 0 or main_menu_options > 3:
         invalid_input()
-        main_menu_options = int(input(f'''\nPlease select 0 to exit app, 1 for product options, 2 for courier options or 3 for order options: '''))
+        main_menu_options = int(input(f'''\n{Print_colours.yellow}
+    (Main Menu) Please select:
+    {Print_colours.reset}
+    0 - to exit app
+    1 - for product options 
+    2 - for courier options 
+    3 - for order options: '''))
     
     if main_menu_options == 0:
         
@@ -64,20 +75,29 @@ def main_menu():
 
 def product_menu():
 
-    product_menu_option = int(input(f'''\nPlease select: 0 to return to the main menu, 1 to view product list, 
-2 to add a new product, 
-3 to update an existing product or 
-4 to delete a product: 
-'''))
+    product_menu_option = int(input(f'''\n{Print_colours.yellow}
+    (Product Menu) Please select: 
+    {Print_colours.reset}
+    0 - to return to the main menu 
+    1 - view product list 
+    2 - to add a new product 
+    3 - to update an existing product or 
+    4 - to delete a product: 
+    
+    '''))
     
     while product_menu_option < 0 or product_menu_option > 4:
         print('\n')
         invalid_input()
-        product_menu_option = int(input(f'''\nPlease select: 0 to return to the main menu, 1 to view product list, 
-2 to add a new product, 
-3 to update an existing product or 
-4 to delete a product: 
-'''))
+        product_menu_option = int(input(f'''\n{Print_colours.yellow}
+    (Product Menu) Please select: 
+    {Print_colours.reset}
+    0 - to return to the main menu, 
+    1 - to view product list, 
+    2 - to add a new product, 
+    3 - to update an existing product or 
+    4 - to delete a product: 
+    '''))
         
     if  product_menu_option == 0:
         
@@ -116,7 +136,7 @@ def product_menu():
         product_id = input('\nPlease choose which product you would like to update via ID: ')
 
         product_name = input('\nPlease choose a new product name: ')
-            
+
         product_price = input('\nPlease choose a new product price value: ')
 
         change_product_value_in_db(product_name, product_price, product_id)
@@ -145,26 +165,27 @@ def product_menu():
 #### COURIER FUNCTION ####
 
 def courier_menu():
-    couriers_menu_option = int(input(
-'''
-\nPlease select: 
-0 to return to the main menu, 
-1 to view couriers_ list, 
-2 to add new courier, 
-3 to update  an existing courier or 
-4 to delete a courier: 
+    couriers_menu_option = int(input(f'''\n{Print_colours.yellow}
+    (Courier Menu) Please select: 
+    {Print_colours.reset}
+    0 - to return to the main menu 
+    1 - to view couriers_ list
+    2 - to add new courier
+    3 - to update  an existing courier or 
+    4 - to delete a courier: 
 
 '''))
     while couriers_menu_option < 0 or couriers_menu_option > 4:
         invalid_input()
-        couriers_menu_option = int(input(
-'''
-\nPlease select: 
-0 to return to the main menu, 
-1 to view couriers_ list, 
-2 to add new courier, 
-3 to update an existing courier or 
-4 to delete a courier:   
+        couriers_menu_option = int(input(f'''\n{Print_colours.yellow}
+    (Courier Menu) Please select:
+    {Print_colours.reset} 
+    0 to return to the main menu, 
+    1 to view couriers_ list, 
+    2 to add new courier, 
+    3 to update an existing courier or 
+    4 to delete a courier:
+    
 '''))
     
     if couriers_menu_option == 0:
@@ -199,12 +220,12 @@ def courier_menu():
         
     elif couriers_menu_option == 3:
         
-        
+        print(f'\n{Print_colours.yellow}Current couriers: {Print_colours.reset}')
         read_courier_from_database()
         
         courier_id = input('\nPlease choose which courier you would like to update via ID: ')
         new_courier_input = input('\nPlease choose a new courier name: ')
-        new_courier_num_input = input('\nPlease choose a new courier number value: ')
+        new_courier_num_input = input('\nPlease choose a new courier phone number value: ')
         
         
         change_courier_value_in_db(new_courier_input, new_courier_num_input, courier_id)
@@ -217,12 +238,12 @@ def courier_menu():
                 
     elif couriers_menu_option == 4:
         
-        print('\nCurrent courier list: ')
+        print(f'\n{Print_colours.yellow}Current couriers: {Print_colours.reset}')
         read_courier_from_database()
         
         courier_to_delete = input('\nPlease select which courier you would like to delete via ID: ')
         delete_courier_from_database(courier_to_delete)
-        print(f'{Print_colours.yellow}\nNew courier list: ' )
+        print(f'{Print_colours.yellow}\nNew courier list: {Print_colours.reset}' )
         read_courier_from_database()
         
         re_main_menu()
@@ -230,28 +251,28 @@ def courier_menu():
         main_menu()
 
 def order_menu():
-    order_menu_option = int(input(
-'''
-\n Please select: 
-0 to return to the main menu, 
-1 to view orders status, 
-2 to make an order, 
-3 update existing order status  
-4 to update an existing order or
-5 to delete an order: 
+    order_menu_option = int(input(f'''\n{Print_colours.yellow} 
+    (Order Menu) Please select: 
+    {Print_colours.reset}
+    0 - to return to the main menu 
+    1 - to view orders status
+    2 - to make an order
+    3 - update existing order status  
+    4 - to update an existing order or
+    5 - to delete an order: 
 
 '''))
     while order_menu_option  < 0 or order_menu_option  > 5:
         invalid_input()
-        order_menu_option = int(input(
-'''
-\n Please select: 
-0 to return to the main menu, 
-1 to view orders status, 
-2 to make an order, 
-3 update existing order status  
-4 to update an existing order or
-5 to delete an order:   
+        order_menu_option = int(input(f'''\n{Print_colours.yellow} 
+        (Order Menu) Please select: 
+        {Print_colours.reset}
+        0 - to return to the main menu 
+        1 - to view orders status 
+        2 - to make an order 
+        3 - update existing order status  
+        4 - to update an existing order or
+        5 - to delete an order:   
 '''))
         
     if order_menu_option == 0:
@@ -263,7 +284,7 @@ def order_menu():
         print(f'{Print_colours.yellow}\nCurrent orders in progress: {Print_colours.reset}')
         read_orders_from_database()
         
-        print('\nReturning to main menu: ')
+        re_main_menu()
         main_menu()
             
     elif order_menu_option == 2:
@@ -342,16 +363,17 @@ def order_menu():
     else:
         order_menu_option == 5
 
+        print(f'{Print_colours.yellow}\nCurrent orders in progress: {Print_colours.reset}')
         read_orders_from_database()
         
         which_order_input_2 = int(input(f'\nPlease select which order you would like to delete via ID: '))
         
         delete_order_from_database(which_order_input_2)
         
+        print(f'{Print_colours.yellow}\nUpdated orders in progress: {Print_colours.reset}')
         read_orders_from_database()
         
         re_main_menu()
         
         main_menu()
 main_menu()
-

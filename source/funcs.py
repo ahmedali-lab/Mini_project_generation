@@ -3,7 +3,7 @@ import pymysql
 import os
 from dotenv import load_dotenv
 
-
+################# CSV FUNCS #################
 def read_csv_file(file_path, csv_to_read):
     with open (file_path, 'r') as csv_file:
         read_csv = csv.DictReader(csv_file)
@@ -36,7 +36,112 @@ def update_items(chosen_item):
             print('\nNothing has been changed')
         else:
             chosen_item[key] = chosen_value
+################# CSV FUNCS #################
 
+################# PRODUCT DB FUNCS #################
+def read_product_from_database():
+    load_dotenv()
+    host = os.environ.get("mysql_host")
+    user = os.environ.get("mysql_user")
+    password = os.environ.get("mysql_pass")
+    database = os.environ.get("mysql_db")
+    connection = pymysql.connect(
+        host,
+        user,
+        password,
+        database
+    )
+    cursor = connection.cursor()
+    cursor.execute(
+        'SELECT product_id, product_name, product_price FROM products')
+    rows = cursor.fetchall()
+    for row in rows:
+        print(
+            f"\n product id: {int(row[0])}, product name: {str(row[1])}, product price: {float(row[2])}")
+    cursor.close()
+    connection.close()
+
+def write_into_product_database(product_name, product_price):
+    load_dotenv()
+    host = os.environ.get("mysql_host")
+    user = os.environ.get("mysql_user")
+    password = os.environ.get("mysql_pass")
+    database = os.environ.get("mysql_db")
+    connection = pymysql.connect(
+        host,
+        user,
+        password,
+        database
+    )
+    cursor = connection.cursor()
+    sql = 'INSERT INTO products (product_name, product_price) VALUES (%s, %s)'
+    val = [(product_name, product_price)]
+    cursor.executemany(sql, val)
+    connection.commit()
+    cursor.close()
+    connection.close()
+    
+def change_product_value_in_db(new_product_input, new_price_input, product_id):
+        load_dotenv()
+        host = os.environ.get("mysql_host")
+        user = os.environ.get("mysql_user")
+        password = os.environ.get("mysql_pass")
+        database = os.environ.get("mysql_db")
+        connection = pymysql.connect(
+            host,
+            user,
+            password,
+            database
+        )
+        cursor = connection.cursor()
+        if new_product_input or new_price_input:
+            sql = 'UPDATE products SET'
+            if new_product_input and new_price_input:
+                sql += ' product_name = %s, product_price = %s WHERE product_id = %s'
+                val = (new_product_input, new_price_input, product_id)
+                
+            elif new_product_input:
+                sql += ' product_name = %s WHERE product_id = %s'
+                val = (new_product_input, product_id)
+                print(f'{Print_colours.green}\nProduct price will remain the same{Print_colours.reset}')
+                
+            elif new_price_input:
+                sql += ' product_price = %s WHERE product_id = %s'
+                val = (new_price_input, product_id)
+                print(f'{Print_colours.green}\nProduct name will remain the same{Print_colours.reset}')
+                
+            cursor.execute(sql, val)
+            connection.commit()
+        else:
+            print(f"\n{Print_colours.green}Nothing has been updated. Entry will stay the same{Print_colours.reset}")
+        cursor.close()
+        connection.close()
+
+def delete_products_from_database(del_product_id):
+    load_dotenv()
+    host = os.environ.get("mysql_host")
+    user = os.environ.get("mysql_user")
+    password = os.environ.get("mysql_pass")
+    database = os.environ.get("mysql_db")
+    
+    connection = pymysql.connect(
+        host,
+        user,
+        password,
+        database
+    )
+    cursor = connection.cursor()
+    sql = 'DELETE FROM products WHERE product_id = %s'
+    val = [(del_product_id)]
+    
+    cursor.execute(sql,val)
+    
+    connection.commit()
+    cursor.close()
+    connection.close()
+################# PRODUCT DB FUNCS #################
+
+################# COURIER DB FUNCS #################
 def read_courier_from_database():
     load_dotenv()
     host = os.environ.get("mysql_host")
@@ -80,71 +185,6 @@ def write_into_courier_database(Courier_name, Phone_number):
     connection.close()
     
     
-def read_product_from_database():
-    load_dotenv()
-    host = os.environ.get("mysql_host")
-    user = os.environ.get("mysql_user")
-    password = os.environ.get("mysql_pass")
-    database = os.environ.get("mysql_db")
-    connection = pymysql.connect(
-        host,
-        user,
-        password,
-        database
-    )
-    cursor = connection.cursor()
-    cursor.execute(
-        'SELECT product_id, product_name, product_price FROM products')
-    rows = cursor.fetchall()
-    for row in rows:
-        print(
-            f"\n product id: {int(row[0])}, product name: {str(row[1])}, product price: {float(row[2])}")
-    cursor.close()
-    connection.close()
-
-def write_into_product_database(product_name, product_price):
-    load_dotenv()
-    host = os.environ.get("mysql_host")
-    user = os.environ.get("mysql_user")
-    password = os.environ.get("mysql_pass")
-    database = os.environ.get("mysql_db")
-    connection = pymysql.connect(
-        host,
-        user,
-        password,
-        database
-    )
-    cursor = connection.cursor()
-    sql = 'INSERT INTO products (product_name, product_price) VALUES (%s, %s)'
-    val = [(product_name, product_price)]
-    cursor.executemany(sql, val)
-    connection.commit()
-    cursor.close()
-    connection.close()
-    
-def delete_products_from_database(del_product_id):
-    load_dotenv()
-    host = os.environ.get("mysql_host")
-    user = os.environ.get("mysql_user")
-    password = os.environ.get("mysql_pass")
-    database = os.environ.get("mysql_db")
-    
-    connection = pymysql.connect(
-        host,
-        user,
-        password,
-        database
-    )
-    cursor = connection.cursor()
-    sql = 'DELETE FROM products WHERE product_id = %s'
-    val = [(del_product_id)]
-    
-    cursor.execute(sql,val)
-    
-    connection.commit()
-    cursor.close()
-    connection.close()
-
 def delete_courier_from_database(del_courier_id):
     load_dotenv()
     host = os.environ.get("mysql_host")
@@ -168,44 +208,6 @@ def delete_courier_from_database(del_courier_id):
     cursor.close()
     connection.close()
 
-
-def change_product_value_in_db(new_product_input, new_price_input, product_id):
-    load_dotenv()
-    host = os.environ.get("mysql_host")
-    user = os.environ.get("mysql_user")
-    password = os.environ.get("mysql_pass")
-    database = os.environ.get("mysql_db")
-    connection = pymysql.connect(
-        host,
-        user,
-        password,
-        database
-    )
-    cursor = connection.cursor()
-    if new_product_input or new_price_input:
-        sql = 'UPDATE products SET'
-        if new_product_input and new_price_input:
-            sql += ' product_name = %s, product_price = %s WHERE product_id = %s'
-            val = (new_product_input, new_price_input, product_id)
-            
-        elif new_product_input:
-            sql += ' product_name = %s WHERE product_id = %s'
-            val = (new_product_input, product_id)
-            print(f'{Print_colours.green}\nProduct price will remain the same{Print_colours.reset}')
-            
-        elif new_price_input:
-            sql += ' product_price = %s WHERE product_id = %s'
-            val = (new_price_input, product_id)
-            print(f'{Print_colours.green}\nProduct name will remain the same{Print_colours.reset}')
-            
-        cursor.execute(sql, val)
-        connection.commit()
-    else:
-        print(f"\n{Print_colours.green}Nothing has been updated. Entry will stay the same{Print_colours.reset}")
-    cursor.close()
-    connection.close()
-    
-    
 def change_courier_value_in_db(new_courier_input, new_courier_num_input, courier_id):
     load_dotenv()
     host = os.environ.get("mysql_host")
@@ -241,8 +243,10 @@ def change_courier_value_in_db(new_courier_input, new_courier_num_input, courier
         print(f"{Print_colours.green}\nNothing has been updated. Entry will stay the same{Print_colours.reset}")
     cursor.close()
     connection.close()
-    
-    
+################# COURIER DB FUNCS #################
+
+
+################# ORDERS DB FUNCS #################
 def read_orders_from_database():
     load_dotenv()
     host = os.environ.get("mysql_host")
@@ -308,7 +312,9 @@ def delete_order_from_database(del_order_id):
     connection.commit()
     cursor.close()
     connection.close()
+################# ORDERS DB FUNCS #################
 
+################# MISCELLANEOUS FUNCS #################
 class Print_colours:
     green = '\033[92m' #GREEN
     yellow = '\033[93m' #YELLOW
@@ -324,4 +330,4 @@ def invalid_input():
 
 def success():
     print(f'\n{Print_colours.green}Success!{Print_colours.reset}')
-    
+################# MISCELLANEOUS FUNCS #################
